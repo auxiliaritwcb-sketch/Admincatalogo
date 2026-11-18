@@ -1,0 +1,96 @@
+/* =========================================================
+   WEBCORP BUSINESS
+   ADMINISTRACIÓN DEL CATÁLOGO
+   catalogo-admin.css
+   ========================================================= */
+
+
+/* =========================================================
+   ESTILOS GENERALES
+========================================================= */
+
+body {
+    background-color: #f1f5f9;
+    color: #0f172a;
+}
+
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+.header-gradient {
+    background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 55%, #312e81 100%);
+}
+
+
+/* =========================================================
+   TARJETAS KPI
+========================================================= */
+
+.kpi-card-1 {
+    background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+}
+
+.kpi-card-2 {
+    background: linear-gradient(135deg, #059669 0%, #065f46 100%);
+}
+
+.kpi-card-3 {
+    background: linear-gradient(135deg, #4f46e5 0%, #3730a3 100%);
+}
+
+
+/* =========================================================
+   MODAL
+========================================================= */
+
+.modal-backdrop {
+    background-color: rgba(15, 23, 42, 0.65);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+}
+
+
+/* =========================================================
+   ANIMACIÓN DEL MODAL
+========================================================= */
+
+@keyframes modalPop {
+    0% {
+        opacity: 0;
+        transform: scale(0.95) translateY(10px);
+    }
+
+    100% {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+.animate-modal {
+    animation: modalPop 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+
+/* =========================================================
+   SCROLLBAR
+========================================================= */
+
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f5f9;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+}

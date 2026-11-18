@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Webcorp Business - Administración del Catálogo</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Plus Jakarta Sans', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- CSS propio -->
+    <link rel="stylesheet" href="catalogo-admin.css">
+</head>
+
+<body class="min-h-screen flex flex-col antialiased selection:bg-indigo-500 selection:text-white">
+
+    <!-- =====================================================
+         HEADER CORPORATIVO OSCURO / ÍNDIGO
+    ====================================================== -->
+    <header class="header-gradient text-white shadow-lg sticky top-0 z-30 border-b border-indigo-900/50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-18 py-3.5 flex items-center justify-between gap-4">
+            
+            <!-- Izquierda: Logo y Título -->
+            <div class="flex items-center gap-3.5">
+                <div class="w-11 h-11 rounded-xl bg-gradient-to-tr from-indigo-500 to-cyan-400 flex items-center justify-center text-white text-xl shadow-lg shadow-indigo-500/30 shrink-0">
+                    <i class="fa-solid fa-boxes-stacked"></i>
+                </div>
+
+                <div>
+                    <h1 class="font-display font-bold text-lg sm:text-xl tracking-tight text-white leading-tight">
+                        Webcorp Business
+                    </h1>
+
+                    <span class="text-xs sm:text-sm text-indigo-200 font-medium block">
+                        Administración del catálogo
+                    </span>
+                </div>
+            </div>
+
+            <!-- Derecha: Estado y Botón Volver -->
+            <div class="flex items-center gap-3 sm:gap-4">
+                <div class="hidden sm:flex items-center gap-2 bg-white/10 border border-white/15 px-3.5 py-1.5 rounded-full text-xs font-medium text-emerald-300 backdrop-blur-sm">
+                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_8px_#34d399]"></span>
+                    Sistema activo
+                </div>
+
+                <button type="button" id="btnBack" class="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-white/10 hover:bg-white/20 active:scale-95 text-white text-sm font-medium border border-white/15 transition-all cursor-pointer">
+                    <i class="fa-solid fa-arrow-left text-xs"></i>
+                    <span>Volver</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- =====================================================
+         CONTENIDO PRINCIPAL
+    ====================================================== -->
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+        <!-- Encabezado de Sección -->
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
+            <div>
+                <h2 class="font-display text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
+                    Catálogo de productos
+                </h2>
+
+                <p class="text-slate-500 text-sm sm:text-base mt-1">
+                    Administra productos, fotografías, información técnica y etiquetas de responsables.
+                </p>
+            </div>
+
+            <button type="button" id="btnOpenNewModal" class="inline-flex items-center justify-center gap-2.5 bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white font-semibold px-5 py-3 rounded-xl shadow-md shadow-indigo-600/25 transition-all cursor-pointer shrink-0">
+                <i class="fa-solid fa-plus"></i>
+                <span>Nuevo producto</span>
+            </button>
+        </div>
+
+        <!-- =================================================
+             TARJETAS DE ESTADÍSTICAS (KPIs)
+        ================================================== -->
+        <section class="grid grid-cols-1 md:grid-cols-3 gap-5 mb-8">
+
+            <!-- KPI 1: Total Productos -->
+            <div class="kpi-card-1 rounded-2xl p-6 text-white shadow-lg relative overflow-hidden group">
+                <div class="absolute -right-6 -top-6 w-28 h-28 rounded-full bg-white/5 group-hover:scale-110 transition-transform duration-500"></div>
+
+                <div class="flex items-center justify-between relative z-10">
+                    <div>
+                        <p class="text-xs font-bold uppercase tracking-wider text-slate-300 mb-1">
+                            Total Productos
+                        </p>
+
+                        <div id="statTotalProducts" class="font-display text-3xl sm:text-4xl font-extrabold">
+                            0
+                        </div>
+                    </div>
+
+                    <div class="w-12 h-12 rounded-xl bg-white/10 border border-white/10 flex items-center justify-center text-cyan-400 text-xl">
+                        <i class="fa-solid fa-cubes"></i>
+                    </div>
+                </div>
+
+                <div class="mt-4 pt-3 border-t border-white/10 flex items-center gap-2 text-xs text-slate-300">
+                    <i class="fa-solid fa-database text-cyan-400"></i>
+                    <span>Registrados en el inventario</span>
+                </div>
+            </div>
+
+            <!-- KPI 2: Productos Activos -->
+            <div class="kpi-card-2 rounded-2xl p-6 text-white shadow-lg relative overflow-hidden group">
+                <div class="absolute -right-6 -top-6 w-28 h-28 rounded-full bg-white/10 group-hover:scale-110 transition-transform duration-500"></div>
+
+                <div class="flex items-center justify-between relative z-10">
+                    <div>
+                        <p class="text-xs font-bold uppercase tracking-wider text-emerald-100 mb-1">
+                            Productos Activos
+                        </p>
+
+                        <div id="statActiveProducts" class="font-display text-3xl sm:text-4xl font-extrabold">
+                            0
+                        </div>
+                    </div>
+
+                    <div class="w-12 h-12 rounded-xl bg-white/15 border border-white/15 flex items-center justify-center text-white text-xl">
+                        <i class="fa-solid fa-circle-check"></i>
+                    </div>
+                </div>
+
+                <div class="mt-4 pt-3 border-t border-white/15 flex items-center gap-2 text-xs text-emerald-100">
+                    <i class="fa-solid fa-eye text-emerald-200"></i>
+                    <span>Visibles y disponibles para venta</span>
+                </div>
+            </div>
+
+            <!-- KPI 3: Fotos Cargadas -->
+            <div class="kpi-card-3 rounded-2xl p-6 text-white shadow-lg relative overflow-hidden group">
+                <div class="absolute -right-6 -top-6 w-28 h-28 rounded-full bg-white/10 group-hover:scale-110 transition-transform duration-500"></div>
+
+                <div class="flex items-center justify-between relative z-10">
+                    <div>
+                        <p class="text-xs font-bold uppercase tracking-wider text-indigo-200 mb-1">
+                            Fotos Cargadas
+                        </p>
+
+                        <div id="statTotalPhotos" class="font-display text-3xl sm:text-4xl font-extrabold">
+                            0
+                        </div>
+                    </div>
+
+                    <div class="w-12 h-12 rounded-xl bg-white/15 border border-white/15 flex items-center justify-center text-white text-xl">
+                        <i class="fa-solid fa-images"></i>
+                    </div>
+                </div>
+
+                <div class="mt-4 pt-3 border-t border-white/15 flex items-center gap-2 text-xs text-indigo-200">
+                    <i class="fa-solid fa-camera text-indigo-300"></i>
+                    <span>Galería multimedia del catálogo</span>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- =================================================
+             BÚSQUEDA Y FILTROS
+        ================================================== -->
+        <section class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200/80 mb-6 flex flex-col sm:flex-row gap-3.5">
+
+            <div class="relative flex-1">
+                <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
+
+                <input
+                    type="text"
+                    id="searchInput"
+                    placeholder="Buscar por nombre, código o etiqueta..."
+                    class="w-full pl-11 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-all">
+            </div>
+
+            <div class="sm:w-56 relative">
+                <select
+                    id="statusFilter"
+                    class="w-full appearance-none pl-4 pr-10 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium text-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-all cursor-pointer">
+                    <option value="">Todos los estados</option>
+                    <option value="activo">Solo Activos</option>
+                    <option value="inactivo">Solo Inactivos</option>
+                </select>
+
+                <i class="fa-solid fa-chevron-down absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs pointer-events-none"></i>
+            </div>
+
+        </section>
+
+        <!-- =================================================
+             TABLA DE PRODUCTOS
+        ================================================== -->
+        <section class="bg-white rounded-2xl shadow-sm border border-slate-200/80 overflow-hidden">
+
+            <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
+
+                <div class="flex items-center gap-2.5">
+                    <i class="fa-solid fa-list-ul text-indigo-600"></i>
+
+                    <h3 class="font-display font-bold text-slate-800 text-base">
+                        Productos registrados
+                    </h3>
+                </div>
+
+                <span id="tableCountBadge" class="text-xs font-semibold px-3 py-1 rounded-full bg-indigo-50 text-indigo-700 border border-indigo-100">
+                    0 productos
+                </span>
+
+            </div>
+
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+
+                    <thead>
+                        <tr class="border-b border-slate-200 bg-slate-50/80 text-[11px] font-bold uppercase tracking-wider text-slate-500">
+                            <th class="py-3.5 px-6">Producto</th>
+                            <th class="py-3.5 px-4">Categoría</th>
+                            <th class="py-3.5 px-4">Etiqueta / Responsable</th>
+                            <th class="py-3.5 px-4">Estado</th>
+                            <th class="py-3.5 px-6 text-right">Acciones</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="productsTableBody" class="divide-y divide-slate-100 text-sm">
+                        <!-- Filas generadas dinámicamente por JavaScript -->
+                    </tbody>
+
+                </table>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- =====================================================
+         MODAL DE CREACIÓN / EDICIÓN DE PRODUCTO
+    ====================================================== -->
+    <div id="productModal" class="fixed inset-0 z-50 hidden modal-backdrop flex items-center justify-center p-4 overflow-y-auto">
+
+        <div class="bg-white w-full max-w-2xl rounded-2xl shadow-2xl border border-slate-200 overflow-hidden animate-modal my-auto">
+
+            <!-- Header del Modal -->
+            <div class="px-6 py-4 bg-slate-50 border-b border-slate-200 flex items-center justify-between">
+
+                <div>
+                    <h3 id="modalTitle" class="font-display text-lg font-bold text-slate-900">
+                        Nuevo Producto
+                    </h3>
+
+                    <p class="text-xs text-slate-500 mt-0.5">
+                        Completa la información y fotografías del producto.
+                    </p>
+                </div>
+
+                <button type="button" id="btnCloseModal" class="w-8 h-8 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-200/70 flex items-center justify-center transition-colors cursor-pointer">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+
+            </div>
+
+            <!-- Formulario -->
+            <form id="productForm">
+
+                <input type="hidden" id="productId">
+
+                <div class="p-6 max-h-[75vh] overflow-y-auto space-y-5">
+
+                    <!-- Grid de campos principales -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+
+                        <!-- Nombre -->
+                        <div>
+                            <label for="prodName" class="block text-xs font-semibold text-slate-700 mb-1.5">
+                                Nombre del producto <span class="text-rose-500">*</span>
+                            </label>
+
+                            <input
+                                type="text"
+                                id="prodName"
+                                required
+                                placeholder="Ej. HONDRO MAX"
+                                class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-all">
+                        </div>
+
+                        <!-- Código -->
+                        <div>
+                            <label for="prodCode" class="block text-xs font-semibold text-slate-700 mb-1.5">
+                                Código <span class="text-rose-500">*</span>
+                            </label>
+
+                            <input
+                                type="text"
+                                id="prodCode"
+                                required
+                                placeholder="Ej. HON-040"
+                                class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-mono uppercase text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-all">
+                        </div>
+
+                        <!-- Categoría -->
+                        <div>
+                            <label for="prodCategory" class="block text-xs font-semibold text-slate-700 mb-1.5">
+                                Categoría
+                            </label>
+
+                            <select
+                                id="prodCategory"
+                                class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-all cursor-pointer">
+                                <option value="Bienestar">Bienestar</option>
+                                <option value="Digestivos">Digestivos</option>
+                                <option value="Articulaciones">Articulaciones</option>
+                                <option value="Control">Control</option>
+                                <option value="Urinario">Urinario</option>
+                                <option value="Masculino">Masculino</option>
+                                <option value="Otros">Otros</option>
+                            </select>
+                        </div>
+
+                        <!-- Estado -->
+                        <div>
+                            <label for="prodStatus" class="block text-xs font-semibold text-slate-700 mb-1.5">
+                                Estado
+                            </label>
+
+                            <select
+                                id="prodStatus"
+                                class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-all cursor-pointer">
+                                <option value="activo">Activo</option>
+                                <option value="inactivo">Inactivo</option>
+                            </select>
+                        </div>
+
+                      <!-- Proveedor / Responsable -->
+<div class="sm:col-span-2">
+
+    <label for="prodProvider" class="block text-xs font-semibold text-slate-700 mb-1.5">
+        Proveedor / Responsable <span class="text-rose-500">*</span>
+    </label>
+
+    <div class="flex flex-col sm:flex-row sm:items-center gap-3">
+
+        <input
+            type="text"
+            id="prodProvider"
+            required
+            placeholder="Ej. Everad"
+            class="flex-1 px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-all">
+
+        <div class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-indigo-50 border border-indigo-100 text-indigo-700 text-xs font-semibold shrink-0">
+            <i class="fa-solid fa-building text-indigo-500"></i>
+            <span id="providerPreviewText">Proveedor</span>
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- Características -->
+<div class="sm:col-span-2">
+
+    <label for="prodCharacteristics" class="block text-xs font-semibold text-slate-700 mb-1.5">
+        Características
+    </label>
+
+    <textarea
+        id="prodCharacteristics"
+        rows="3"
+        placeholder="Ej. 20 cápsulas|Dosis: 1 cápsula al día|Producto natural|Contenido neto: 20 cápsulas"
+        class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-all resize-none"></textarea>
+
+    <p class="text-[11px] text-slate-400 mt-1">
+        Separa cada característica con el símbolo |
+    </p>
+
+</div>
+
+                        <!-- Descripción -->
+                        <div class="sm:col-span-2">
+                            <label for="prodDescription" class="block text-xs font-semibold text-slate-700 mb-1.5">
+                                Descripción
+                            </label>
+
+                            <textarea
+                                id="prodDescription"
+                                rows="2"
+                                placeholder="Escribe las características y beneficios principales del producto..."
+                                class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-all resize-none"></textarea>
+                        </div>
+
+                        <!-- Contraindicaciones -->
+                        <div class="sm:col-span-2">
+                            <label for="prodContraindications" class="block text-xs font-semibold text-slate-700 mb-1.5">
+                                Contraindicaciones
+                            </label>
+
+                            <textarea
+                                id="prodContraindications"
+                                rows="2"
+                                placeholder="Escribe las advertencias o contraindicaciones..."
+                                class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-all resize-none"></textarea>
+                        </div>
+
+                    </div>
+
+                    <!-- Sección de Fotografías -->
+                    <div class="pt-4 border-t border-slate-200">
+
+                        <div class="flex items-center justify-between mb-3">
+
+                            <div>
+                                <strong class="text-sm font-bold text-slate-800 block">
+                                    Fotografías del producto
+                                </strong>
+
+                                <p class="text-xs text-slate-500">
+                                    Puedes agregar hasta 6 fotografías. La Foto 1 será la portada en la tabla.
+                                </p>
+                            </div>
+
+                            <span id="photoCounterBadge" class="text-xs font-bold px-2.5 py-1 rounded-lg bg-slate-100 text-slate-700">
+                                0 / 6 fotos
+                            </span>
+
+                        </div>
+
+                        <div id="photosGrid" class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                            <!-- Los 6 cuadros de fotos se generan desde JS -->
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <!-- Footer del Modal -->
+                <div class="px-6 py-4 bg-slate-50 border-t border-slate-200 flex items-center justify-end gap-3">
+
+                    <button type="button" id="btnCancelModal" class="px-4 py-2.5 rounded-xl border border-slate-300 bg-white hover:bg-slate-100 text-slate-700 text-sm font-semibold transition-colors cursor-pointer">
+                        Cancelar
+                    </button>
+
+                    <button type="submit" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold shadow-md shadow-indigo-600/20 transition-all cursor-pointer">
+                        <i class="fa-solid fa-floppy-disk"></i>
+                        <span>Guardar producto</span>
+                    </button>
+
+                </div>
+
+            </form>
+        </div>
+    </div>
+
+    <!-- =====================================================
+         MODAL DE CONFIRMACIÓN DE ELIMINACIÓN
+    ====================================================== -->
+    <div id="deleteConfirmModal" class="fixed inset-0 z-50 hidden modal-backdrop flex items-center justify-center p-4">
+
+        <div class="bg-white w-full max-w-md rounded-2xl shadow-2xl border border-slate-200 p-6 animate-modal">
+
+            <div class="w-12 h-12 rounded-full bg-rose-100 text-rose-600 flex items-center justify-center text-xl mb-4">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+            </div>
+
+            <h3 class="font-display text-lg font-bold text-slate-900 mb-1">
+                ¿Eliminar producto?
+            </h3>
+
+            <p class="text-sm text-slate-500 mb-6">
+                Estás a punto de eliminar
+                <strong id="deleteProductName" class="text-slate-800"></strong>
+                del catálogo. Esta acción no se puede deshacer.
+            </p>
+
+            <div class="flex items-center justify-end gap-3">
+
+                <button type="button" id="btnCancelDelete" class="px-4 py-2 rounded-xl border border-slate-300 bg-white hover:bg-slate-100 text-slate-700 text-sm font-semibold transition-colors cursor-pointer">
+                    Cancelar
+                </button>
+
+                <button type="button" id="btnConfirmDelete" class="px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-sm font-semibold shadow-md shadow-rose-600/20 transition-colors cursor-pointer">
+                    Sí, eliminar
+                </button>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- =====================================================
+         NOTIFICACIÓN TOAST FLOTANTE
+    ====================================================== -->
+    <div id="toastNotification" class="fixed bottom-5 right-5 z-50 transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none">
+
+        <div class="bg-slate-900 text-white px-4 py-3 rounded-xl shadow-xl border border-slate-700 flex items-center gap-3 text-sm font-medium">
+
+            <i id="toastIcon" class="fa-solid fa-circle-check text-emerald-400"></i>
+
+            <span id="toastMessage">
+                Operación exitosa
+            </span>
+
+        </div>
+    </div>
+
+    <!-- JavaScript propio -->
+    <script src="catalogo-admin.js"></script>
+
+</body>
+</html>
